@@ -4,11 +4,24 @@
 
 ProfitMR é uma extensão Manifest V3 para Chrome, navegadores Chromium (incluindo Opera) e Firefox. A calculadora funciona de forma independente do site; a leitura opcional consulta os custos exibidos nas páginas de cartões do Microsoft Rewards. Projeto independente, sem afiliação ou endosso da Microsoft.
 
+<a id="chrome-manual-install"></a>
+## Instalação manual no Chrome
+
+A extensão não é distribuída pela Chrome Web Store. A instalação manual usa o modo de desenvolvedor do Chrome e não recebe atualizações automáticas.
+
+1. [Baixe o código-fonte mais recente (.zip)](https://github.com/pdrots/profitmr-extension/archive/refs/heads/main.zip).
+2. Extraia o arquivo ZIP em uma pasta permanente no computador.
+3. Abra `chrome://extensions` no Chrome e ative o **Modo do desenvolvedor**.
+4. Selecione **Carregar sem compactação** e escolha a pasta extraída que contém `manifest.json`.
+5. Mantenha essa pasta no computador; o Chrome carrega a extensão diretamente dela.
+
+Para atualizar, baixe e extraia a versão mais recente, substitua os arquivos na pasta da extensão e selecione **Recarregar** em `chrome://extensions`. O Chrome pode exibir avisos por a extensão ter sido carregada no modo de desenvolvedor.
+
 ## Instalar para desenvolvimento
 
-### Chrome, Edge e Opera
+### Edge e Opera
 
-1. Abra `chrome://extensions`, `edge://extensions` ou `opera://extensions`.
+1. Abra `edge://extensions` ou `opera://extensions`.
 2. Ative o **Modo do desenvolvedor**.
 3. Selecione **Carregar sem compactação** e escolha a pasta deste projeto.
 4. Abra a extensão pelo ícone do navegador.
@@ -20,7 +33,7 @@ ProfitMR é uma extensão Manifest V3 para Chrome, navegadores Chromium (incluin
 3. Selecione **Carregar extensão temporária...** e escolha `dist\firefox\manifest.json`.
 4. A extensão temporária permanece instalada até o Firefox ser fechado.
 
-O manifesto principal usa service worker para Chrome e Opera. `manifest.firefox.json` usa scripts de background, suportados pelo Firefox, e o script de build monta uma cópia pronta para carregar sem alterar o manifesto Chromium.
+O manifesto principal usa service worker para Chrome, Edge e Opera. `manifest.firefox.json` usa scripts de background, suportados pelo Firefox, e o script de build monta uma cópia pronta para carregar sem alterar o manifesto Chromium.
 
 O manifesto Firefox declara suporte ao Firefox para computador e Android a partir da versão 142. A interface e os fluxos principais ainda precisam ser testados em dispositivos Android antes de marcar essa plataforma como pronta para usuários.
 
