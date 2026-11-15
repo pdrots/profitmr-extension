@@ -1,5 +1,7 @@
 # ProfitMR
 
+**Português** · [English](README.en.md)
+
 [Site ProfitMR](https://profitmr.vercel.app) · [Instalar no Firefox](https://addons.mozilla.org/pt-BR/firefox/addon/profitmr/)
 
 ProfitMR é uma extensão Manifest V3 para Chrome, navegadores Chromium (incluindo Opera) e Firefox. A calculadora funciona de forma independente do site; a leitura opcional consulta os custos exibidos nas páginas de cartões do Microsoft Rewards. Projeto independente, sem afiliação ou endosso da Microsoft.
