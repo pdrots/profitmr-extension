@@ -65,7 +65,14 @@ function copy() {
 function createEmptyRegionalValues() {
   return Object.fromEntries(Object.keys(REGIONS).map((regionId) => [
     regionId,
-    { gamePrice: null, balancePoints: null, rates: {}, customAmount: REGIONS[regionId].customMin, customPoints: null },
+    {
+      gamePrice: null,
+      balancePoints: null,
+      rates: {},
+      customAmount: REGIONS[regionId].customMin,
+      customPoints: null,
+      customMaxPoints: null,
+    },
   ]));
 }
 
@@ -106,6 +113,10 @@ function mergeRegionalValues(values) {
     if (Object.hasOwn(saved, 'customPoints') && (saved.customPoints === null || isPositiveInteger(saved.customPoints))) {
       target.customPoints = saved.customPoints;
     }
+    if (Object.hasOwn(saved, 'customMaxPoints') &&
+      (saved.customMaxPoints === null || isPositiveInteger(saved.customMaxPoints))) {
+      target.customMaxPoints = saved.customMaxPoints;
+    }
     if (isRecord(saved.rates)) {
       for (const amount of REGIONS[regionId].amounts) {
         if (Object.hasOwn(saved.rates, String(amount)) &&
@@ -133,6 +144,10 @@ function mergeBrazilCosts(costs) {
   if (Object.hasOwn(costs, 'customPoints') &&
     (costs.customPoints === null || isPositiveInteger(costs.customPoints))) {
     brazil.customPoints = costs.customPoints;
+  }
+  if (Object.hasOwn(costs, 'customMaxPoints') &&
+    (costs.customMaxPoints === null || isPositiveInteger(costs.customMaxPoints))) {
+    brazil.customMaxPoints = costs.customMaxPoints;
   }
 }
 
@@ -243,7 +258,7 @@ function renderRateFields() {
   }
 
   const customAmountLabel = document.createElement('label');
-  customAmountLabel.textContent = `${text.customCard} · ${text.referenceAmount} (${currencySymbol()})`;
+  customAmountLabel.textContent = `${text.referenceAmount} (${currencySymbol()})`;
   const customAmountInput = document.createElement('input');
   customAmountInput.id = 'customAmount';
   customAmountInput.type = 'number';
@@ -261,10 +276,9 @@ function renderRateFields() {
   });
   customAmountInput.addEventListener('change', saveCurrentRegion);
   customAmountLabel.append(customAmountInput);
-  fragment.append(customAmountLabel);
 
   const customPointsInputLabel = document.createElement('label');
-  customPointsInputLabel.textContent = text.customPoints;
+  customPointsInputLabel.textContent = text.referencePoints;
   const customPointsInput = document.createElement('input');
   customPointsInput.type = 'number';
   customPointsInput.min = '1';
@@ -275,7 +289,35 @@ function renderRateFields() {
   customPointsInput.dataset.kind = 'custom-points';
   customPointsInput.disabled = preferences.region === 'br';
   customPointsInputLabel.append(customPointsInput);
-  fragment.append(customPointsInputLabel);
+
+  const customMaxPointsLabel = document.createElement('label');
+  customMaxPointsLabel.className = 'custom-max-field';
+  customMaxPointsLabel.textContent = text.customMaxPoints(formatCurrency(region.customMax));
+  const customMaxPointsInput = document.createElement('input');
+  customMaxPointsInput.type = 'number';
+  customMaxPointsInput.min = '1';
+  customMaxPointsInput.step = '1';
+  customMaxPointsInput.inputMode = 'numeric';
+  customMaxPointsInput.placeholder = preferences.region === 'br' ? text.unqueried : text.points;
+  customMaxPointsInput.value = values.customMaxPoints ?? '';
+  customMaxPointsInput.dataset.kind = 'custom-max-points';
+  customMaxPointsInput.disabled = preferences.region === 'br';
+  customMaxPointsLabel.append(customMaxPointsInput);
+
+  const customFields = document.createElement('div');
+  customFields.className = 'custom-card-fields';
+  customFields.setAttribute('role', 'group');
+  customFields.setAttribute('aria-label', text.customCard);
+  const customFieldsTitle = document.createElement('strong');
+  customFieldsTitle.className = 'custom-card-title';
+  customFieldsTitle.textContent = text.customCard;
+  customFields.append(
+    customFieldsTitle,
+    customAmountLabel,
+    customPointsInputLabel,
+    customMaxPointsLabel,
+  );
+  fragment.append(customFields);
   cardRates.replaceChildren(fragment);
 
   const current = regionalValues[preferences.region];
@@ -350,6 +392,8 @@ function currentFormValues() {
     const customPoints = cardRates.querySelector('[data-kind="custom-points"]').value;
     values.customPoints = readPersistedValue('customPoints', customPoints);
   }
+  const customMaxPoints = cardRates.querySelector('[data-kind="custom-max-points"]').value;
+  values.customMaxPoints = readPersistedValue('customMaxPoints', customMaxPoints);
   values.rates = { ...values.rates };
   for (const input of cardRates.querySelectorAll('[data-kind="fixed"]')) {
     values.rates[input.dataset.amount] = readPersistedValue('rate', input.value);
@@ -385,6 +429,7 @@ async function saveBrazilCosts() {
     balancePoints: br.balancePoints,
     customAmount: br.customAmount,
     customPoints: br.customPoints,
+    customMaxPoints: br.customMaxPoints,
   };
   for (const amount of REGIONS.br.amounts) {
     costs[`card${amount}`] = br.rates[String(amount)] ?? null;
@@ -410,7 +455,11 @@ function calculateStrategy() {
   const customPoints = preferences.region === 'br'
     ? values.customPoints
     : readPersistedValue('customPoints', cardRates.querySelector('[data-kind="custom-points"]').value);
+  const customMaxPoints = preferences.region === 'br'
+    ? values.customMaxPoints
+    : readPersistedValue('customMaxPoints', cardRates.querySelector('[data-kind="custom-max-points"]').value);
   values.customPoints = customPoints;
+  values.customMaxPoints = customMaxPoints;
 
   if (!isValidPrice(gamePrice)) {
     showResult(interpolate(text.priceInvalid, {
@@ -438,10 +487,21 @@ function calculateStrategy() {
     amount: Math.round(amount * UNITS_PER_CURRENCY),
     points: values.rates[String(amount)],
   }));
+  const canCalibrate = isPositiveInteger(customMaxPoints) &&
+    customMaxPoints > customPoints &&
+    customAmount < region.customMax;
+  const customPointsPerUnit = canCalibrate
+    ? (customMaxPoints - customPoints) / (region.customMax - customAmount)
+    : null;
   for (let amount = region.customMin; amount <= region.customMax; amount++) {
     options.push({
       amount: amount * UNITS_PER_CURRENCY,
-      points: Math.ceil((customPoints * amount) / customAmount),
+      points: customPointsPerUnit === null
+        ? Math.ceil((customPoints * amount) / customAmount)
+        : region.customPointsStep === 1
+          ? Math.ceil(customPoints + customPointsPerUnit * (amount - customAmount))
+          : Math.round((customPoints + customPointsPerUnit * (amount - customAmount)) /
+            region.customPointsStep) * region.customPointsStep,
     });
   }
 
@@ -516,6 +576,8 @@ function calculateStrategy() {
     gamePrice,
     balancePoints,
     customAmount,
+    customMaxAmount: region.customMax,
+    customCalibrationUsed: canCalibrate,
     totalAmount: chosenAmount,
     totalPoints: bestPoints[chosenAmount],
     cards,
@@ -551,7 +613,11 @@ function renderPlan(plan) {
 
   const estimateNote = document.createElement('p');
   estimateNote.className = 'result-note';
-  estimateNote.textContent = text.estimateNote(formatCurrency(plan.customAmount));
+  estimateNote.textContent = text.estimateNote(
+    formatCurrency(plan.customAmount),
+    formatCurrency(plan.customMaxAmount),
+    plan.customCalibrationUsed,
+  );
   result.append(estimateNote);
   if (plan.balancePoints !== null) {
     const balance = document.createElement('div');
@@ -586,6 +652,7 @@ async function startScan() {
       type: 'scan-cards',
       region: preferences.region,
       customAmount,
+      customMaxAmount: region.customMax,
     });
     status.textContent = response?.ok
       ? `${response.message} ${copy().scanClosePopup}`
@@ -641,6 +708,9 @@ function renderScanState(state) {
       if (isValidCustomAmount(state.region, entry.customAmount)) {
         regionalValues[state.region].customAmount = entry.customAmount;
       }
+    }
+    if (field === 'customMaxPoints') {
+      regionalValues[state.region].customMaxPoints = entry.points;
     }
   }
   renderRateFields();

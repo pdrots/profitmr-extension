@@ -35,6 +35,10 @@ if (CARD && REGION) {
 
   if (CARD.custom) {
     customAmount = getRequestedCustomAmount();
+    const requestedField = new URL(location.href).searchParams.get('profitmrField');
+    if (requestedField === 'customMaxPoints') {
+      CARD.field = requestedField;
+    }
     const changed = customAmount === null ? prepareCustomAmount() : false;
     customInputChanged = true;
     customInputFound = customAmount !== null || customInputFound;

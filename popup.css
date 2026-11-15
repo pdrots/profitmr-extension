@@ -350,6 +350,27 @@ section {
   margin-bottom: 14px;
 }
 
+.custom-card-fields {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 9px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 10px;
+  border: 1px solid #dfe5dc;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.custom-card-title {
+  grid-column: 1 / -1;
+  color: #4c7851;
+  font-size: 11px;
+}
+
+.custom-max-field {
+  grid-column: 1 / -1;
+}
+
 label {
   display: grid;
   gap: 5px;
@@ -491,6 +512,15 @@ body[data-theme="dark"] .website-link {
   border-color: #3a463a;
   background: #202720;
   color: #b7d9ae;
+}
+
+body[data-theme="dark"] .custom-card-fields {
+  border-color: #3a463a;
+  background: #202720;
+}
+
+body[data-theme="dark"] .custom-card-title {
+  color: #a7d29d;
 }
 
 body[data-theme="dark"] .website-link:hover {

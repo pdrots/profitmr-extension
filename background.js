@@ -12,7 +12,7 @@ let resultQueue = Promise.resolve();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === 'scan-cards') {
-    startScan(message.region, message.customAmount).then(sendResponse).catch((error) => {
+    startScan(message.region, message.customAmount, message.customMaxAmount).then(sendResponse).catch((error) => {
       sendResponse({ ok: false, error: errorMessage(error) });
     });
     return true;
@@ -51,7 +51,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   }
 });
 
-async function startScan(regionId, requestedAmount) {
+async function startScan(regionId, requestedAmount, requestedMaxAmount) {
   if (!Object.hasOwn(REWARDS_REGIONS, regionId)) {
     return { ok: false, error: 'Região não suportada para leitura.' };
   }
@@ -72,6 +72,9 @@ async function startScan(regionId, requestedAmount) {
       requestedAmount < region.customMin ||
       requestedAmount > region.customMax)) {
     return { ok: false, error: 'Valor do cartão personalizado fora dos limites da região.' };
+  }
+  if (requestedMaxAmount !== undefined && requestedMaxAmount !== region.customMax) {
+    return { ok: false, error: 'Valor máximo do cartão personalizado inválido.' };
   }
 
   const scanId = crypto.randomUUID();
@@ -95,6 +98,13 @@ async function startScan(regionId, requestedAmount) {
     })),
     { field: 'customPoints', amount: customAmount, sku: region.customSku },
   ];
+  if (customAmount !== region.customMax) {
+    cards.push({
+      field: 'customMaxPoints',
+      amount: region.customMax,
+      sku: region.customSku,
+    });
+  }
   const tabMap = {};
   const state = {
     scanId,
@@ -103,6 +113,7 @@ async function startScan(regionId, requestedAmount) {
     message: 'Preparando as páginas dos cartões...',
     startedAt: Date.now(),
     customAmount,
+    customMaxAmount: region.customMax,
     cards,
     tabs: tabMap,
     results: {},
@@ -134,8 +145,8 @@ async function startScan(regionId, requestedAmount) {
         });
       }
       await chrome.tabs.update(tab.id, {
-        url: card.field === 'customPoints'
-          ? `https://rewards.bing.com/redeem/sku/${card.sku}?c=${card.amount}`
+        url: card.field === 'customPoints' || card.field === 'customMaxPoints'
+          ? `https://rewards.bing.com/redeem/sku/${card.sku}?c=${card.amount}&profitmrField=${card.field}`
           : `https://rewards.bing.com/redeem/sku/${card.sku}`,
       });
     } catch (error) {
@@ -275,18 +286,25 @@ async function applyFoundCosts(state) {
     if (result?.status === 'found') {
       if (field === 'customPoints') {
         regionCosts.customPoints = result.points;
+        if (result.customAmount) {
+          regionCosts.customAmount = result.customAmount;
+        }
+      } else if (field === 'customMaxPoints') {
+        regionCosts.customMaxPoints = result.points;
       } else {
         rates[String(card.amount)] = result.points;
       }
       changed = true;
-      if (field === 'customPoints' && result.customAmount) {
-        regionCosts.customAmount = result.customAmount;
-      }
       if (regionId === 'br') {
-        const legacyField = field === 'customPoints' ? field : `card${card.amount}`;
-        legacyCosts[legacyField] = result.points;
-        if (field === 'customPoints' && result.customAmount) {
-          legacyCosts.customAmount = result.customAmount;
+        if (field === 'customPoints') {
+          legacyCosts.customPoints = result.points;
+          if (result.customAmount) {
+            legacyCosts.customAmount = result.customAmount;
+          }
+        } else if (field === 'customMaxPoints') {
+          legacyCosts.customMaxPoints = result.points;
+        } else {
+          legacyCosts[`card${card.amount}`] = result.points;
         }
       }
     }

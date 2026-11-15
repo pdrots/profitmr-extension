@@ -40,7 +40,7 @@ The popup includes a link to the [ProfitMR website](https://profitmr.vercel.app)
 
 Enter the price of a game or app and your points balance. The extension has light and dark themes, supports Portuguese, English, and Spanish, and includes gift cards for Brazil (BRL), the United States (USD), and Spain (EUR). Values are saved separately for each region. In any region, open **Update costs automatically** and select **Read costs from Rewards** to look up cards in background tabs. You must already be signed in to Rewards; review the detected values before using them.
 
-The custom card cost corresponds to the selected reference amount. Changing that amount clears the previous points value. For an accurate comparison, look up the exact custom amount in Rewards. The calculator can estimate costs proportionally for other amounts and identifies those estimates in the results. Always confirm the cost in Rewards before redeeming.
+The custom card cost corresponds to the selected reference amount. Changing that amount clears the previous points value. The automatic lookup also checks the region's maximum amount; with both quotes, the calculator interpolates costs for other amounts. Without the maximum quote, it keeps estimating proportionally from the reference amount. Results are estimates: always confirm the exact cost on Rewards before redeeming.
 
 If a lookup gets stuck, select **Unlock / restart scan**. This closes tabs opened by the lookup and preserves saved costs. Lookup depends on the content rendered by the website and may not find every value; review the results and try again if needed.
 

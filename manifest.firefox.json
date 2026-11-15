@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ProfitMR",
   "description": "Calculadora de cartões e pontos para comparar custos e estimar resgates no Microsoft Rewards.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "icons": {
     "16": "icon-16.png",
     "32": "icon-32.png",

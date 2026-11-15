@@ -40,7 +40,7 @@ O popup inclui um link para o [site ProfitMR](https://profitmr.vercel.app), que 
 
 Informe o preço do jogo ou app e seu saldo de pontos. A extensão oferece tema claro/escuro, interface em português, inglês ou espanhol e cartões do Brasil (BRL), Estados Unidos (USD) ou Espanha (EUR). Os valores são salvos separadamente por região. Em qualquer uma das três regiões, abra **Atualizar custos automaticamente** e selecione **Ler custos no Rewards** para consultar os cartões em abas de fundo; a sessão do navegador precisa estar conectada. Confira os valores detectados antes de usar.
 
-O custo do cartão personalizado corresponde ao valor de referência selecionado. Ao mudar esse valor, os pontos anteriores são apagados. Para comparar um valor personalizado com precisão, consulte no Rewards exatamente o valor pretendido. A calculadora pode estimar proporcionalmente os custos de outros valores e identifica essas estimativas no resultado. Confirme sempre o custo no Rewards antes de resgatar.
+O custo do cartão personalizado corresponde ao valor de referência selecionado. Ao mudar esse valor, os pontos anteriores são apagados. A leitura automática consulta também o valor máximo da região; com as duas cotações, a calculadora interpola o custo dos demais valores. Sem a cotação máxima, mantém a estimativa proporcional ao valor de referência. Os resultados são estimativas: confirme sempre o custo exato no Rewards antes de resgatar.
 
 Se uma leitura ficar presa, use **Destravar / reiniciar leitura**. Isso fecha as abas abertas pela leitura e preserva os custos salvos. A leitura depende do conteúdo renderizado pelo site e pode não encontrar os valores; confira os resultados e, se necessário, tente novamente.
 

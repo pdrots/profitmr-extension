@@ -5,6 +5,7 @@ var REWARDS_REGIONS = {
     amounts: [5, 15, 30],
     customMin: 25,
     customMax: 350,
+    customPointsStep: 5,
     fixedSkus: {
       '5': '000409000021',
       '15': '000409000022',
@@ -18,6 +19,7 @@ var REWARDS_REGIONS = {
     amounts: [1.25, 3, 5, 10, 25, 50, 100],
     customMin: 5,
     customMax: 100,
+    customPointsStep: 1,
     fixedSkus: {
       '1.25': '000400000296',
       '3': '000400000259',
@@ -35,6 +37,7 @@ var REWARDS_REGIONS = {
     amounts: [2, 5, 10],
     customMin: 5,
     customMax: 100,
+    customPointsStep: 1,
     fixedSkus: {
       '2': '000413000023',
       '5': '000413000024',
