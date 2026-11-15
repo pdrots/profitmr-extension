@@ -26,14 +26,7 @@ Para atualizar, baixe e extraia a versão mais recente, substitua os arquivos na
 3. Selecione **Carregar sem compactação** e escolha a pasta deste projeto.
 4. Abra a extensão pelo ícone do navegador.
 
-### Firefox
-
-1. No PowerShell, execute `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build-firefox.ps1` a partir da pasta da extensão. A opção `Bypass` se aplica somente a esse processo e não altera a política do sistema.
-2. Abra `about:debugging#/runtime/this-firefox`.
-3. Selecione **Carregar extensão temporária...** e escolha `dist\firefox\manifest.json`.
-4. A extensão temporária permanece instalada até o Firefox ser fechado.
-
-O manifesto principal usa service worker para Chrome, Edge e Opera. `manifest.firefox.json` usa scripts de background, suportados pelo Firefox, e o script de build monta uma cópia pronta para carregar sem alterar o manifesto Chromium.
+O manifesto principal usa service worker para Chrome, Edge e Opera. A versão oficial para Firefox está disponível na [Mozilla Add-ons](https://addons.mozilla.org/pt-BR/firefox/addon/profitmr/); `manifest.firefox.json` mantém as configurações específicas do navegador, e `build-firefox.ps1` gera os arquivos de teste sem alterar o manifesto Chromium.
 
 O manifesto Firefox declara suporte ao Firefox para computador e Android a partir da versão 142. A interface e os fluxos principais ainda precisam ser testados em dispositivos Android antes de marcar essa plataforma como pronta para usuários.
 
