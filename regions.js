@@ -1,0 +1,45 @@
+var REWARDS_REGIONS = {
+  br: {
+    currency: 'BRL',
+    locale: 'pt-BR',
+    amounts: [5, 15, 30],
+    customMin: 25,
+    customMax: 350,
+    fixedSkus: {
+      '5': '000409000021',
+      '15': '000409000022',
+      '30': '000409000023',
+    },
+    customSku: '001409000021',
+  },
+  us: {
+    currency: 'USD',
+    locale: 'en-US',
+    amounts: [1.25, 3, 5, 10, 25, 50, 100],
+    customMin: 5,
+    customMax: 100,
+    fixedSkus: {
+      '1.25': '000400000296',
+      '3': '000400000259',
+      '5': '000400000260',
+      '10': '000400000261',
+      '25': '000400000262',
+      '50': '000400000297',
+      '100': '000400000263',
+    },
+    customSku: '001400000296',
+  },
+  es: {
+    currency: 'EUR',
+    locale: 'es-ES',
+    amounts: [2, 5, 10],
+    customMin: 5,
+    customMax: 100,
+    fixedSkus: {
+      '2': '000413000023',
+      '5': '000413000024',
+      '10': '000413000025',
+    },
+    customSku: '001413000023',
+  },
+};

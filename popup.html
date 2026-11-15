@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ProfitMR</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header class="topbar">
+        <div>
+          <p id="marketLabel" class="eyebrow"><img src="icon-32.png" alt=""><span id="brandLabel">ProfitMR · Brasil</span></p>
+          <h1 id="pageTitle">Calculadora de cartões</h1>
+        </div>
+        <div class="page-controls">
+          <details class="menu-control" id="regionMenu">
+            <summary id="regionButton" aria-label="Localização" title="Localização">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M7 9h.01M17 15h.01"/></svg>
+              <span id="regionCode">BRL</span>
+              <svg class="menu-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+            </summary>
+            <div id="regionOptions" class="menu-popover" role="group" aria-label="Localização"></div>
+          </details>
+          <details class="menu-control" id="languageMenu">
+            <summary id="languageButton" aria-label="Idioma" title="Idioma">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17M12 3c2.3 2.4 3.5 5.4 3.5 9S14.3 18.6 12 21c-2.3-2.4-3.5-5.4-3.5-9S9.7 5.4 12 3Z"/></svg>
+              <span id="languageCode">PT</span>
+              <svg class="menu-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+            </summary>
+            <div id="languageOptions" class="menu-popover language-popover" role="group" aria-label="Idioma"></div>
+          </details>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Ativar tema escuro" title="Ativar tema escuro">
+            <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 15.4A8.5 8.5 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></svg>
+            <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <p id="intro" class="intro">Compare combinações pelos custos informados. Valores personalizados não consultados são estimativas.</p>
+
+      <a id="websiteLink" class="website-link" href="https://profitmr.vercel.app" target="_blank" rel="noopener noreferrer">
+        <span id="websiteLinkLabel">Visite o site da ProfitMR</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3h8v8M13 3 6 10M11 9v4H3V5h4"/></svg>
+      </a>
+
+      <section class="purchase-fields" aria-label="Dados da compra">
+        <label><span id="priceLabel">Preço do jogo ou app · R$</span><input id="gamePrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="Ex.: 500"></label>
+        <label><span id="balanceLabel">Seu saldo de pontos</span><input id="balancePoints" type="number" min="0" step="1" inputmode="numeric" placeholder="Ex.: 100000"></label>
+      </section>
+
+      <button id="calculate" type="button">Calcular estratégia estimada</button>
+      <section id="result" class="result" aria-live="polite" aria-label="Resultado da estratégia">Informe o preço, os custos dos cartões e selecione calcular.</section>
+
+      <div class="section-heading">
+        <h2 id="ratesTitle">Custos dos cartões</h2>
+        <span id="ratesHint">Informe ou leia no Rewards</span>
+      </div>
+      <section id="cardRates" class="card-rates" aria-label="Custos em pontos dos cartões"></section>
+
+      <details class="scanner" id="scanner">
+        <summary id="scannerTitle">Atualizar custos automaticamente</summary>
+        <p id="scannerNote" class="scanner-note">Abre os cartões em abas de fundo no Rewards. A leitura precisa de uma sessão já conectada; confira os valores encontrados.</p>
+        <button id="scan" class="secondary" type="button">Ler custos no Rewards</button>
+        <button id="reset-scan" class="reset-button" type="button">Destravar / reiniciar leitura</button>
+        <p id="status" role="status">A leitura automática é opcional. Você também pode preencher os custos manualmente.</p>
+      </details>
+      <footer><p id="footerNote">Para comparar um cartão personalizado com precisão, consulte o próprio valor desejado. Ao mudar o valor consultado, os pontos anteriores são apagados. A leitura automática não acessa senhas nem cookies.</p></footer>
+    </main>
+    <script src="regions.js"></script>
+    <script src="popup-data.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
